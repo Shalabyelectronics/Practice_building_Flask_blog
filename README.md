@@ -13,6 +13,7 @@ As you see it is cool right, but behind the sine there are a lot of works you ha
 ## **First Step** _ Get Familiar with The tasks.
 
 When you start anything in life you need first to discover what do you up to? and what tools do you going to use to achieve all tasks that related to this project?
+A [link](#lets-start-explaining-each-tasks-and-it's-steps) to jump towards target header
 
 ## Task number 1 : Register New users
 
@@ -98,4 +99,4 @@ Gravatar is really a fun idea where we can convert an email to an image and use 
 
 This task need need just one step that will add our app Flask instance to our Gravatar class and us that object in our post.html by using jinja
 
-### Lets start explaining each Tasks and it's steps 
+# Lets start explaining each Tasks and it's steps 
