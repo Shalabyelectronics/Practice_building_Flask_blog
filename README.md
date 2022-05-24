@@ -44,7 +44,7 @@ After we are done from register route and it functionality now we need to login 
 
 **step 5 and step 6 will be the same when the user logged in as above task number 1**
 
-### Task number 3: Logout The User
+### [Task number 3: Logout The User](#task-3)
 
 Now we need to add a logout route that will logout the user from the session and we have just 3 steps here.
 
@@ -203,6 +203,20 @@ def login():
 ```
 
 Here I want to mention something interesting and it is when you try to reach any of pages that required login you will see that there is something additional appeared to your link bar as below:
+
 ![next_concept](https://user-images.githubusercontent.com/57592040/169966989-e60aace1-60ee-4e2b-97c9-c2a027950100.gif)
 
 So the key `next ` will hold the endpoint as appeared `next=%2Fedit-post%2F1` here the endpoint is `/edit-post/1` So I checked first the next value by this code `next_page = request.args.get("next")` then if the next is not none it will redirect the user to that page.
+
+# Task 3
+
+Here we will use `logout_user` from Flask_login tool to logout the current user then redirect the user to the home page as below:
+
+```python
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('get_all_posts'))
+```
+
+and regarding the step 2 where we need to show the login and register button instead of logout button we explained that within task 1 by using `is_authenticated` attribute from `current_user` object.
