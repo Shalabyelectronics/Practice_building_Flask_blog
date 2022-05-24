@@ -100,3 +100,69 @@ This task need need just one step that will add our app Flask instance to our Gr
 
 #### Lets start explaining each Tasks and it's steps 
 # Task 1
+**step 1:** Create a Register Form by using Flask WTForm
+
+With the form.py create a new form and call it RegisterForm as below:
+
+```python
+class RegistrationForm(FlaskForm):
+    username = StringField("User Name", validators=[DataRequired()])
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    confirm_password = PasswordField("Confirm password", validators=[EqualTo("password")])
+    submit = SubmitField("Submit")
+```
+
+**step 2:** Create a `/register` endpoint with the register route that will render our register template register.html and we will pass our register form to the render_template method as below:
+
+```python
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user_existed = User.query.filter_by(email=form.email.data).first()
+        if user_existed:
+            flash("You've already signed up with that email, log in instead!.")
+            return redirect(url_for("login"))
+        else:
+            user = User(username=form.username.data,
+                        email=form.email.data,
+                        password=generate_password_hash(form.password.data, "pbkdf2:sha256", 8))
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for("get_all_posts"))
+    return render_template("register.html", form=form)
+```
+
+**step 3:** Use Flask-Bootstrap to render a wtf quick_form. as below
+
+```jinja2
+{% import "bootstrap/wtf.html" as wtf %}
+{{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+```
+
+So first you need to import the wtf from `bootstrap/wtf.html` then add `wtf.quick_form` to the form location in the register.html, just take a look about it.
+
+**step 4:** Use the User table to add registered users to blog database > That was explained in **Step 2**.
+
+**Step 5:** When the user is registered we will hide the login and register button and show the logout button.
+
+And this changes will happen in the header.html where the navbar includes the `login`,`register` and `logout` we will use `is_authenticated` attribute from `current_user` object as below.
+
+```jinja2
+{% if current_user.is_authenticated %}
+            <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+          </li>
+          {% endif %}
+```
+
+**Step 6:** Redirect the User to the home page > It mentioned in step 2 here our home page called get_all_post route and it's endpoint the the root `/`
