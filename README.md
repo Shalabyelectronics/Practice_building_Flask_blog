@@ -30,7 +30,7 @@ That mean we need to do 4 steps as the rest are already set to us when downloadi
 
 **Step 6:** Redirect the User to the home page
 
-## Task number 2 : Login Registered Users
+## [Task number 2 : Login Registered Users](#task-2)
 
 After we are done from register route and it functionality now we need to login our users by their email and password as well and to do so you need to do another 6 steps:
 
@@ -166,3 +166,5 @@ And this changes will happen in the header.html where the navbar includes the `l
 ```
 
 **Step 6:** Redirect the User to the home page > It mentioned in step 2 here our home page called get_all_post route and it's endpoint the the root `/`
+
+# Task 2
