@@ -9,11 +9,11 @@ Lets check this gif that gave you a quick overview for our end goal.
 
 As you see it is cool right, but behind the sine there are a lot of works you have to do, so make a cup of coffee and get ready.
 
-### **First Step** _ Get Familiar with The tasks.
+## **First Step** _ Get Familiar with The tasks.
 
 When you start anything in life you need first to discover what do you up to? and what tools do you going to use to achieve all tasks that related to this project?
 
-#### Task number 1 : Register New users
+### Task number 1 : Register New users
 
 That mean we need to do 4 steps as the rest are already set to us when downloading the starter project file:
 
@@ -29,7 +29,7 @@ That mean we need to do 4 steps as the rest are already set to us when downloadi
 
 **Step 6:** Redirect the User to the home page
 
-#### Task number 2 : Login Registered Users
+## Task number 2 : Login Registered Users
 
 After we are done from register route and it functionality now we need to login our users by their email and password as well and to do so you need to do another 6 steps:
 
@@ -43,7 +43,7 @@ After we are done from register route and it functionality now we need to login 
 
 **step 5 and step 6 will be the same when the user logged in as above task number 1**
 
-#### Task number 3: Logout The User
+### Task number 3: Logout The User
 
 Now we need to add a logout route that will logout the user from the session and we have just 3 steps here.
 
@@ -53,7 +53,7 @@ Now we need to add a logout route that will logout the user from the session and
 
 **Step 3:** Redirect the User to the home page.
 
-#### Task number 4: Protect Routes
+### Task number 4: Protect Routes
 
 Now we will protect our administrator routes and it is `add_new_post`, `edit_post` and `delete_post`, and here you need 4 steps to achieve this task:
 
@@ -65,7 +65,7 @@ Now we will protect our administrator routes and it is `add_new_post`, `edit_pos
 
 **Step 4:** We need to combine `login_required` and `admin_only ` decorators so we can control the situation where if any anonymous user try to reach any of control routes first it will ask that user to log in by using `login_required` then we need to check if that user is an admin or not by `admin_only` decorator. 
 
-#### Task number 5: Creating Relational Databases
+### Task number 5: Creating Relational Databases
 
 Here we will take our experience with ORM or Object relational Mapping to the next stage we we need to figure out how to connect two or more table together by build a relationships between them, we need 2 steps and we are going gradually with these steps because we need to do some experiments until we reach the idle point where all functionalities are works as our expectations .
 
@@ -73,7 +73,7 @@ Here we will take our experience with ORM or Object relational Mapping to the ne
 
 **Step 2:** We need to recreating our database after changes to the schema So we will delete the database and create it again.
 
-#### Task number 6: Allow Any User to Add Comments to BlogPosts
+### Task number 6: Allow Any User to Add Comments to BlogPosts
 
 At this point we need to expand our web application by allow other users to comment to any blog posts, 
 
@@ -91,7 +91,7 @@ So we need to do 3 steps to achieve that:
 
 **Step 6:** Update the code in post.html to display all the comments associated with blog post.
 
-#### Task number 7: Add an image for each commenters by using Gravatar.
+### Task number 7: Add an image for each commenters by using Gravatar.
 
 Gravatar is really a fun idea where we can convert an email to an image and use it to each user who comment underneath of the post, I like the idea and to know more about Gravatar you can check their documentation about it [here](https://pythonhosted.org/Flask-Gravatar/).
 
