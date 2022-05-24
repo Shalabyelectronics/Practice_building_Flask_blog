@@ -5,7 +5,8 @@ We are going to explain very important topics with this day 69 from [100 days of
 
 Lets check this gif that gave you a quick overview for our end goal.
 
-## Add a video that explain an overview of the final project
+![quick_overview_3](https://user-images.githubusercontent.com/57592040/169954833-0e4eec7e-12e9-42d7-b3ec-7db7a9cfba20.gif)
+
 
 As you see it is cool right, but behind the sine there are a lot of works you have to do, so make a cup of coffee and get ready.
 
