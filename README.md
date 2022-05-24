@@ -168,3 +168,41 @@ And this changes will happen in the header.html where the navbar includes the `l
 **Step 6:** Redirect the User to the home page > It mentioned in step 2 here our home page called get_all_post route and it's endpoint the the root `/`
 
 # Task 2
+**Step 1 :** Create a login Form that include the email, password and submit button, so here we are going to create another form as we did before with the register form and it will look like the code below:
+
+```python
+class LoginForm(FlaskForm):
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    remember = BooleanField("Remember me")
+    submit = SubmitField("Sign In")
+```
+
+**Step 2:** Use Flask-Bootstrap to render a wtf quick_form, here we will do the same as we did with adding the register form in our register.html with step 3.
+
+and we will create the login route to get the data from the login form and check if the user email is existed in the database if yes then we will add that user to login session by using `login_user` method. so we combined all steps of task 2 together as login route below:
+
+```python
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                login_user(user, remember=form.remember.data)
+                next_page = request.args.get("next")
+                return redirect(next_page) if next_page else redirect(url_for("get_all_posts"))
+            else:
+                flash("Login unsuccessful, please check your password.", "danger")
+        else:
+            flash("Login unsuccessful, please check your email.")
+    return render_template("login.html", form=form)
+```
+
+Here I want to mention something interesting and it is when you try to reach any of pages that required login you will see that there is something additional appeared to your link bar as below:
+![next_concept](https://user-images.githubusercontent.com/57592040/169966989-e60aace1-60ee-4e2b-97c9-c2a027950100.gif)
+
+So the key `next ` will hold the endpoint as appeared `next=%2Fedit-post%2F1` here the endpoint is `/edit-post/1` So I checked first the next value by this code `next_page = request.args.get("next")` then if the next is not none it will redirect the user to that page.
