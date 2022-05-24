@@ -13,7 +13,7 @@ As you see it is cool right, but behind the sine there are a lot of works you ha
 
 When you start anything in life you need first to discover what do you up to? and what tools do you going to use to achieve all tasks that related to this project?
 
-### Task number 1 : Register New users
+## Task number 1 : Register New users
 
 That mean we need to do 4 steps as the rest are already set to us when downloading the starter project file:
 
