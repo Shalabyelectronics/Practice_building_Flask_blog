@@ -98,5 +98,5 @@ Gravatar is really a fun idea where we can convert an email to an image and use 
 
 This task need need just one step that will add our app Flask instance to our Gravatar class and us that object in our post.html by using jinja
 
-# Lets start explaining each Tasks and it's steps 
+#### Lets start explaining each Tasks and it's steps 
 # Task 1
