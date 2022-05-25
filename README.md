@@ -54,7 +54,7 @@ Now we need to add a logout route that will logout the user from the session and
 
 **Step 3:** Redirect the User to the home page.
 
-### Task number 4: Protect Routes
+### [Task number 4: Protect Routes](#task-4)
 
 Now we will protect our administrator routes and it is `add_new_post`, `edit_post` and `delete_post`, and here you need 4 steps to achieve this task:
 
