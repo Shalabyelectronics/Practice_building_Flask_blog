@@ -66,7 +66,7 @@ Now we will protect our administrator routes and it is `add_new_post`, `edit_pos
 
 **Step 4:** We need to combine `login_required` and `admin_only ` decorators so we can control the situation where if any anonymous user try to reach any of control routes first it will ask that user to log in by using `login_required` then we need to check if that user is an admin or not by `admin_only` decorator. 
 
-### Task number 5: Creating Relational Databases
+### [Task number 5: Creating Relational Databases](#task-5)
 
 Here we will take our experience with ORM or Object relational Mapping to the next stage we we need to figure out how to connect two or more table together by build a relationships between them, we need 2 steps and we are going gradually with these steps because we need to do some experiments until we reach the idle point where all functionalities are works as our expectations .
 
@@ -267,3 +267,100 @@ def delete_post(post_id):
     db.session.commit()
     return redirect(url_for('get_all_posts'))
 ```
+
+# Task 5
+
+This step is very important as we need to understand the logic about how to connect two table together as one user may have many posts so the relationship between the two of them are one-to-many. 
+
+so to simplify this concept lets say we have two class as below:
+
+```python
+class User:
+    def __init__(self,id,name,email,password,posts):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.password = password
+        self.posts = []
+        
+class Post:
+    def __init__(self,title,body)
+    self.title = title 
+    self.body = body
+    
+```
+
+So when we need to create a user object from User class that has some posts created by this user we can do it like this:
+
+```python
+shalaby = User(
+    id=1,
+    name="shalaby",
+    email="shalaby@email.com",
+    password="123",
+    posts = [
+        Post(
+        	title="Hallo World",
+            body="I love coding"
+        )
+    ]
+)
+```
+
+So here the user called shalaby can have many posts and to translate that to our tables we need to use two methods `relationship` and `ForeignKey` as showing below:
+
+```python
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    posts = relationship("BlogPost", backref="user")
+    
+    
+class BlogPost(db.Model):
+    __tablename__ = "blog_post"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    subtitle = db.Column(db.String(250), nullable=False)
+    date = db.Column(db.String(250), nullable=False)
+    body = db.Column(db.Text(250), nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+```
+
+So as we can see that `User` table is a parent and `BlogPost` is a child as we said one user can have many posts so we create a `posts ` variable that will create a relationship with `BlogPost` table by adding a user column within the `BlogPost` table.
+
+on other hand we need to connect the user table to the child BlogPost table and we name the result to  ` author_id`  column, I know it sound weird but focus with me because it took me maybe three days to solve this puzzle but still not fully understanding working with ORM.
+
+lets see first how we add `author_id ` to the child `BlogPost` table??!
+
+```python
+new_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            body=form.body.data,
+            img_url=form.img_url.data,
+            date=date.today().strftime("%B %d, %Y"),
+            user=user
+        )
+```
+
+First question you going to ask is Where is an `authour_id` column and why we assigned `user` parameter to user object ???  You are totally right,  me too I was writing it like below:
+
+```python
+new_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            body=form.body.data,
+            img_url=form.img_url.data,
+            date=date.today().strftime("%B %d, %Y"),
+            author_id=user.id
+        )
+```
+
+But it always throw errors that I could not understand until I watched a video about doing the same thing so i understand that the Column name we actually added it  when we create a relationship with our `User` table as a parent `posts = relationship("BlogPost", backref="user")` and the `backref` parameter will establish a bidirectional relationship in one-to-many, where the “reverse” side is a many to one, specify an additional as mentioned in their documentation [here](https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html) 
+
+And `author_id = db.Column(db.Integer, db.ForeignKey("user.id"))` from the Child `BlogPost` mean that it will create a column called author id that will save the foreign key as we chose here `user.id` 
+
+until this point and we modified our tables we need to delete the database and create it again to confirm the new modification.
