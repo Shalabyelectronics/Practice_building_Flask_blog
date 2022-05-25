@@ -41,8 +41,11 @@
                       <img src="{{ comment.user.email |  gravatar(size=200, rating='x') }}" />
                     </div>
                     <div class="commentText">
-                      <p>{{ comment.comment }}</p>
+                      <p>{{ comment.comment | safe}}</p>
                       <span class="date sub-text">{{comment.user.username}}</span>
+                      {% if admin %}
+                      <a href="{{url_for('delete_comment', comment_id=comment.id) }}">✘</a>
+                      {% endif %}
                     </div>
                 </li>
               </ul>
