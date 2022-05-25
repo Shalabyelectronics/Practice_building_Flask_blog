@@ -49,7 +49,7 @@ class BlogPost(db.Model):
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text(250), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
-    post_author = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     post_comments = relationship("Comment", backref="blog_post")
 
 
@@ -58,7 +58,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.Text(250), nullable=False)
     comment_author = db.Column(db.Integer, db.ForeignKey("user.id"))
-    blog_comments = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
 
 
 # db.create_all()
