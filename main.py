@@ -71,7 +71,7 @@ def admin_only(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         if current_user.get_id() is None:
-            return redirect(url_for(login_manager.login_view))
+            return redirect(url_for("login"))
         elif current_user.get_id() != "1":
             return abort(403)
         return func(*args, **kwargs)
