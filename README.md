@@ -220,3 +220,50 @@ def logout():
 ```
 
 and regarding the step 2 where we need to show the login and register button instead of logout button we explained that within task 1 by using `is_authenticated` attribute from `current_user` object.
+
+# Task 4
+
+I think this very important task where we need to protect our sanative blog routes and they are `add_new_post`, `edit_post`, `delete_comment` and `delete_post`, so even we use the `current_user` object with `get_id()` method we still can access blog control routes by request each route by it's end point so to protect our blog control routes from this scenario we need to create our own decorator and this how I do it:
+
+```python
+def admin_only(func):
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        if current_user.get_id() is None:
+            next_page = request.args.get("next")
+            return redirect(url_for("login"))
+        elif current_user.get_id() != "1":
+            return abort(403)
+        return func(*args, **kwargs)
+    return wrapper_func
+```
+
+That logic need to become familiar with two concept to understand how this decorator actually work they are :
+
+- first class function 
+- closure 
+
+When you understand both of them you well be familiar with decorators, so lets explain how this decorator actually work:
+
+**First** I used wraps decorator from functools module that will help us to avoid any conflicts will happen with our namespace later as it always return the name of the original function name instead of wrapper.
+
+**Second** we checked if there is any user loaded to our session if there is no user loaded it will redirect the user to login route to login first then above our `admin_only` decorator we are going to use `login_required` decorator so it will flash a warning message and prevent the next keyword to redirect the user to that page after logged in as below:
+
+![protect routes](https://user-images.githubusercontent.com/57592040/170173277-f7b5b818-aa1e-4b0a-b546-b65c39db5a34.gif)
+
+else if the user is already loaded in the session we will check if it an admin as admin id number is 1 so if we got and different number we will return the user to `403` https page.
+
+**Finally** if everything went well we will return the original route 
+
+and here is an example how we stack `admin_only` and `login_required` decorators together.
+
+```py
+@app.route("/delete/<int:post_id>")
+@login_required
+@admin_only
+def delete_post(post_id):
+    post_to_delete = BlogPost.query.get(post_id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+    return redirect(url_for('get_all_posts'))
+```
