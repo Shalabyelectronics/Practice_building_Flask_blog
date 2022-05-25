@@ -74,7 +74,7 @@ Here we will take our experience with ORM or Object relational Mapping to the ne
 
 **Step 2:** We need to recreating our database after changes to the schema So we will delete the database and create it again.
 
-### Task number 6: Allow Any User to Add Comments to BlogPosts
+### [Task number 6: Allow Any User to Add Comments to BlogPosts](#task-6)
 
 At this point we need to expand our web application by allow other users to comment to any blog posts, 
 
@@ -364,3 +364,106 @@ But it always throw errors that I could not understand until I watched a video a
 And `author_id = db.Column(db.Integer, db.ForeignKey("user.id"))` from the Child `BlogPost` mean that it will create a column called author id that will save the foreign key as we chose here `user.id` 
 
 until this point and we modified our tables we need to delete the database and create it again to confirm the new modification.
+
+#  Task 6
+
+Here we are going to add a comment table to our database so we can store users comments and here we will do the same what we did between user and BlogPost tables as user was the parent and BlogPodt was the child.
+
+So here the BlogPost will be the parent and comment table will be a child and the relationship will be one-to-many , many-to-one as below:
+
+```python
+class BlogPost(db.Model):
+    __tablename__ = "blog_post"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    subtitle = db.Column(db.String(250), nullable=False)
+    date = db.Column(db.String(250), nullable=False)
+    body = db.Column(db.Text(250), nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_comments = relationship("Comment", backref="blog_post")
+
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text(250), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
+```
+
+so each post has it's own comments.
+
+And finally to load our comments we need to connect the user table as parent with comment table as child so we can reach each user name to add them underneath their comments.
+
+```python
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    posts = relationship("BlogPost", backref="user")
+    comments = relationship("Comment", backref="user")
+    
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text(250), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
+```
+
+and here how to load post comments with jinja2
+
+```jinja2
+{% for comment in comments %}
+          <div class="col-lg-8 col-md-10 mx-auto comment">
+              <ul class="commentList">
+                <li>
+                    <div class="commenterImage">
+                      <img src="{{ comment.user.email |  gravatar(size=200, rating='x') }}" />
+                    </div>
+                    <div class="commentText">
+                      <p>{{ comment.comment | safe}}</p>
+                      <span class="date sub-text">{{comment.user.username}}</span>
+                      {% if admin %}
+                      <a href="{{url_for('delete_comment', comment_id=comment.id) }}">✘</a>
+                      {% endif %}
+                    </div>
+                </li>
+              </ul>
+            </div>
+          {% endfor %}
+```
+
+and to add new comment we need to create a form then add a functionality to get the date when submit the form and safe them to our comment table as below:
+
+```python
+@app.route("/post/<int:post_id>", methods=["Get", "POST"])
+def show_post(post_id):
+    admin = False
+    normal_user = False
+    form = CommentForm()
+    if current_user.get_id():
+        if int(current_user.get_id()) == 1:
+            admin = True
+        else:
+            normal_user = True
+    if form.validate_on_submit():
+        user = User.query.get(int(current_user.get_id()))
+        post = BlogPost.query.get(post_id)
+        user_comment = Comment(
+            comment=form.comment.data,
+            user=user,
+            blog_post=post
+        )
+        db.session.add(user_comment)
+        db.session.commit()
+        return redirect(url_for("show_post", post_id=post_id))
+    requested_post = BlogPost.query.get(post_id)
+    blog_comments = requested_post.post_comments
+    return render_template("post.html", post=requested_post, comments=blog_comments, admin=admin, user=normal_user,
+                           form=form)
+```
+
+after all changes we did we will recreate our database to apply the modifications.
