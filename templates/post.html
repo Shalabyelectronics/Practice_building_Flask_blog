@@ -51,7 +51,7 @@
               </ul>
             </div>
           {% endfor %}
-          {% if user %}
+          {% if user or admin %}
           {{ ckeditor.load() }}
           {{ ckeditor.config(name='comment') }}
           {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
