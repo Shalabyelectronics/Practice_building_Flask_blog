@@ -69,15 +69,14 @@ def load_user(user_id):
 
 def admin_only(func):
     @wraps(func)
-    def wrapper_func_one(*args, **kwargs):
+    def wrapper_func(*args, **kwargs):
         if current_user.get_id() is None:
             next_page = request.args.get("next")
             return redirect(next_page) if next_page else redirect(url_for(login_manager.login_view))
         elif current_user.get_id() != "1":
             return abort(403)
         return func(*args, **kwargs)
-
-    return wrapper_func_one
+    return wrapper_func
 
 
 @app.route('/')
