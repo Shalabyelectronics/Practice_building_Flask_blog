@@ -92,7 +92,7 @@ So we need to do 3 steps to achieve that:
 
 **Step 6:** Update the code in post.html to display all the comments associated with blog post.
 
-### Task number 7: Add an image for each commenters by using Gravatar.
+### [Task number 7: Add an image for each commenters by using Gravatar.](#task-7)
 
 Gravatar is really a fun idea where we can convert an email to an image and use it to each user who comment underneath of the post, I like the idea and to know more about Gravatar you can check their documentation about it [here](https://pythonhosted.org/Flask-Gravatar/).
 
