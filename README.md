@@ -92,7 +92,7 @@ So we need to do 3 steps to achieve that:
 
 **Step 6:** Update the code in post.html to display all the comments associated with blog post.
 
-### Task number 7: Add an image for each commenters by using Gravatar.
+### [Task number 7: Add an image for each commenters by using Gravatar.](#task-7)
 
 Gravatar is really a fun idea where we can convert an email to an image and use it to each user who comment underneath of the post, I like the idea and to know more about Gravatar you can check their documentation about it [here](https://pythonhosted.org/Flask-Gravatar/).
 
@@ -467,3 +467,21 @@ def show_post(post_id):
 ```
 
 after all changes we did we will recreate our database to apply the modifications.
+
+# Task 7
+
+Final step we need to add a photos for users who comments, so we are going to use Gravatar's and its used across the internet to provide an avatar  image for blog comments as below:
+
+![gravatar](https://user-images.githubusercontent.com/57592040/170267123-40866a56-a046-4a80-8b6a-3e50efba0ed1.gif)
+
+and to do that we fellow Flask Gravatar's documentation [here](https://pythonhosted.org/Flask-Gravatar/)
+
+# Resources
+
+[Connecting to a Database in Flask Using Flask-SQLAlchemy by Pretty Printed](https://youtu.be/SYG1jQYIxfQ)
+
+[Programming Terms: First-Class Functions by Corey Schafer](https://youtu.be/kr0mpwqttM0)
+
+[Programming Terms: Closures - How to Use Them and Why They Are Useful](https://www.youtube.com/watch?v=swU3c34d2NQ)
+
+[Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions](https://youtu.be/FsAPt_9Bf3U)
