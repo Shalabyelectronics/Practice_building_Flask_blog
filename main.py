@@ -146,18 +146,16 @@ def show_post(post_id):
         else:
             normal_user = True
     if form.validate_on_submit():
-        user = User.query.get(int(current_user.get_id()))
         post = BlogPost.query.get(post_id)
         user_comment = Comment(
             comment=form.comment.data,
-            user=user,
-            blog_post=post
+            post_id=post.id
         )
         db.session.add(user_comment)
         db.session.commit()
         return redirect(url_for("show_post", post_id=post_id))
     requested_post = BlogPost.query.get(post_id)
-    blog_comments = requested_post.post_comments
+    blog_comments = requested_post.all_comments
     return render_template("post.html", post=requested_post, comments=blog_comments, admin=admin, user=normal_user,
                            form=form)
 
@@ -185,7 +183,7 @@ def add_new_post():
             body=form.body.data,
             img_url=form.img_url.data,
             date=date.today().strftime("%B %d, %Y"),
-            user=user
+            author_id=user.id
         )
         db.session.add(new_post)
         db.session.commit()
@@ -230,7 +228,7 @@ def delete_post(post_id):
 @admin_only
 def delete_comment(comment_id):
     comment_to_delete = Comment.query.get(comment_id)
-    post_id = comment_to_delete.blog_post.id
+    post_id = comment_to_delete.post_id
     db.session.delete(comment_to_delete)
     db.session.commit()
     return redirect(url_for("show_post", post_id=post_id))
