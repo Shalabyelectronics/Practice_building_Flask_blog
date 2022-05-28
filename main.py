@@ -170,6 +170,7 @@ def contact():
     return render_template("contact.html")
 
 
+
 @app.route("/new-post", methods=["GET", "POST"])
 @login_required
 @admin_only
