@@ -42,6 +42,7 @@ class User(db.Model, UserMixin):
     comments = relationship("Comment", backref="user")
 
 
+
 class BlogPost(db.Model):
     __tablename__ = "blog_post"
     id = db.Column(db.Integer, primary_key=True)
