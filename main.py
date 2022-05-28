@@ -34,13 +34,12 @@ login_manager.login_view = "login"
 
 ##CONFIGURE TABLES
 class User(db.Model, UserMixin):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    posts = relationship("BlogPost", backref="user")
-    comments = relationship("Comment", backref="user")
-
+    posts = relationship("BlogPost", back_populates="blog_users")
 
 
 class BlogPost(db.Model):
@@ -51,15 +50,16 @@ class BlogPost(db.Model):
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text(250), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    post_comments = relationship("Comment", backref="blog_post")
+    blog_users = relationship("User", back_populates="posts")
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    all_comments = relationship("Comment", back_populates="post")
 
 
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.Text(250), nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post = relationship("BlogPost", back_populates="all_comments")
     post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
 
 
@@ -77,6 +77,7 @@ def admin_only(func):
         elif current_user.get_id() != "1":
             return abort(403)
         return func(*args, **kwargs)
+
     return wrapper_func
 
 
@@ -190,7 +191,6 @@ def add_new_post():
         db.session.commit()
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
-
 
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
