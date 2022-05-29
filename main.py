@@ -16,8 +16,8 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 gravatar = Gravatar(app,
-                    size=250,
-                    rating='x',
+                    size=100,
+                    rating='g',
                     default='retro',
                     force_default=False,
                     force_lower=False,
