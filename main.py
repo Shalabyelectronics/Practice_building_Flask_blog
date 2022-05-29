@@ -28,15 +28,21 @@ gravatar = Gravatar(app,
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///blog.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 login_manager.login_view = "login"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 ##CONFIGURE TABLES
 class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     posts = relationship("BlogPost", back_populates="author")
@@ -67,17 +73,13 @@ class Comment(db.Model):
 
 
 # db.create_all()
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 
 def admin_only(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
-        if current_user.get_id() is None:
+        if current_user.id is None:
             return redirect(url_for("login"))
-        elif current_user.get_id() != "1":
+        elif current_user.id != 1:
             return abort(403)
         return func(*args, **kwargs)
 
@@ -86,12 +88,8 @@ def admin_only(func):
 
 @app.route('/')
 def get_all_posts():
-    admin = False
-    if current_user.get_id():
-        if int(current_user.get_id()) == 1:
-            admin = True
     posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts, admin=admin)
+    return render_template("index.html", all_posts=posts)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -103,14 +101,14 @@ def register():
             flash("You've already signed up with that email, log in instead!.")
             return redirect(url_for("login"))
         else:
-            user = User(username=form.username.data,
+            new_user = User(name=form.username.data,
                         email=form.email.data,
                         password=generate_password_hash(form.password.data, "pbkdf2:sha256", 8))
-            db.session.add(user)
+            db.session.add(new_user)
             db.session.commit()
-            login_user(user)
+            login_user(new_user)
             return redirect(url_for("get_all_posts"))
-    return render_template("register.html", form=form)
+    return render_template("register.html", form=form, current_user=current_user)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -150,17 +148,16 @@ def show_post(post_id):
         else:
             normal_user = True
     if form.validate_on_submit():
-        user_comment = Comment(
+        new_comment = Comment(
             text=form.comment.data,
-            post_id=post,
+            post_id=post.id,
             comment_author=current_user
         )
-        db.session.add(user_comment)
+        db.session.add(new_comment)
         db.session.commit()
         return redirect(url_for("show_post", post_id=post_id))
     requested_post = BlogPost.query.get(post_id)
-    blog_comments = requested_post.blog_comments
-    return render_template("post.html", post=requested_post, comments=blog_comments, admin=admin, user=normal_user,
+    return render_template("post.html", post=requested_post, admin=admin, user=normal_user,
                            form=form)
 
 

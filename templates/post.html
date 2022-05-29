@@ -10,7 +10,7 @@
             <h1>{{post.title}}</h1>
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
-              <a href="#">{{post.blog_user.username}}</a>
+              <a href="#">{{post.author.name}}</a>
               on {{post.date}}</span>
           </div>
         </div>
@@ -33,7 +33,7 @@
 
 
 <!--           Comments Area -->
-          {% for comment in comments %}
+          {% for comment in post.comments %}
           <div class="col-lg-8 col-md-10 mx-auto comment">
               <ul class="commentList">
                 <li>
@@ -41,8 +41,8 @@
                       <img src="{{ comment.comment_author.email |  gravatar(size=200, rating='x') }}" />
                     </div>
                     <div class="commentText">
-                      <p>{{ comment.comment | safe}}</p>
-                      <span class="date sub-text">{{comment.comment_author.username}}</span>
+                      <p>{{ comment.text | safe}}</p>
+                      <span class="date sub-text">{{comment.comment_author.name}}</span>
                       {% if admin %}
                       <a href="{{url_for('delete_comment', comment_id=comment.id) }}">✘</a>
                       {% endif %}
