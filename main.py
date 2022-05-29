@@ -44,7 +44,7 @@ class User(db.Model, UserMixin):
 
 
 class BlogPost(db.Model):
-    __tablename__ = "blog_post"
+    __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
@@ -63,7 +63,7 @@ class Comment(db.Model):
     post = relationship("BlogPost", back_populates="blog_comments")
     comment_author = relationship("User", back_populates="user_comments")
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
 
 
 # db.create_all()
