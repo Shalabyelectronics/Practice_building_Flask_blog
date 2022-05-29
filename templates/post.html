@@ -10,7 +10,7 @@
             <h1>{{post.title}}</h1>
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
-              <a href="#">{{post.blog_users.username}}</a>
+              <a href="#">{{post.blog_user.username}}</a>
               on {{post.date}}</span>
           </div>
         </div>
@@ -38,11 +38,11 @@
               <ul class="commentList">
                 <li>
                     <div class="commenterImage">
-                      <img src="{{ comment.post.blog_users.email |  gravatar(size=200, rating='x') }}" />
+                      <img src="{{ comment.comment_author.email |  gravatar(size=200, rating='x') }}" />
                     </div>
                     <div class="commentText">
                       <p>{{ comment.comment | safe}}</p>
-                      <span class="date sub-text">{{comment.post.blog_users.username}}</span>
+                      <span class="date sub-text">{{comment.comment_author.username}}</span>
                       {% if admin %}
                       <a href="{{url_for('delete_comment', comment_id=comment.id) }}">✘</a>
                       {% endif %}

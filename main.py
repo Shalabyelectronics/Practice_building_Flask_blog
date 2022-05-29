@@ -39,7 +39,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    posts = relationship("BlogPost", back_populates="blog_users")
+    posts = relationship("BlogPost", back_populates="blog_user")
+    user_comments = relationship("Comment", back_populates="comment_author")
 
 
 class BlogPost(db.Model):
@@ -50,16 +51,18 @@ class BlogPost(db.Model):
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text(250), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
-    blog_users = relationship("User", back_populates="posts")
+    blog_user = relationship("User", back_populates="posts")
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    all_comments = relationship("Comment", back_populates="post")
+    blog_comments = relationship("Comment", back_populates="post")
 
 
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.Text(250), nullable=False)
-    post = relationship("BlogPost", back_populates="all_comments")
+    post = relationship("BlogPost", back_populates="blog_comments")
+    comment_author = relationship("User", back_populates="user_comments")
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
 
 
@@ -147,15 +150,17 @@ def show_post(post_id):
             normal_user = True
     if form.validate_on_submit():
         post = BlogPost.query.get(post_id)
+        user = User.query.get(int(current_user.get_id()))
         user_comment = Comment(
             comment=form.comment.data,
-            post_id=post.id
+            post_id=post.id,
+            author_id=user.id
         )
         db.session.add(user_comment)
         db.session.commit()
         return redirect(url_for("show_post", post_id=post_id))
     requested_post = BlogPost.query.get(post_id)
-    blog_comments = requested_post.all_comments
+    blog_comments = requested_post.blog_comments
     return render_template("post.html", post=requested_post, comments=blog_comments, admin=admin, user=normal_user,
                            form=form)
 
@@ -168,7 +173,6 @@ def about():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
-
 
 
 @app.route("/new-post", methods=["GET", "POST"])
