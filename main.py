@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(250), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     posts = relationship("BlogPost", back_populates="author")
     comments = relationship("Comment", back_populates="comment_author")
@@ -72,7 +72,8 @@ class Comment(db.Model):
     text = db.Column(db.Text, nullable=False)
 
 
-# db.create_all()
+db.create_all()
+
 
 def admin_only(func):
     @wraps(func)
@@ -102,8 +103,8 @@ def register():
             return redirect(url_for("login"))
         else:
             new_user = User(name=form.username.data,
-                        email=form.email.data,
-                        password=generate_password_hash(form.password.data, "pbkdf2:sha256", 8))
+                            email=form.email.data,
+                            password=generate_password_hash(form.password.data, "pbkdf2:sha256", 8))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
