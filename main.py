@@ -78,7 +78,7 @@ db.create_all()
 def admin_only(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
-        if current_user.id is None:
+        if current_user.get_id() is None:
             return redirect(url_for("login"))
         elif current_user.id != 1:
             return abort(403)
@@ -90,7 +90,7 @@ def admin_only(func):
 @app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts)
+    return render_template("index.html", all_posts=posts, current_user=current_user)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -212,7 +212,7 @@ def edit_post(post_id):
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
 
-    return render_template("make-post.html", form=edit_form)
+    return render_template("make-post.html", form=edit_form, is_edit=True, current_user=current_user)
 
 
 @app.route("/delete/<int:post_id>")
